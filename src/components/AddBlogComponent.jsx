@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 
 import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField';
+import { TextField, Button, MenuItem, Select } from '@material-ui/core';
 import { BlogContext } from '../contexts/BlogContext';
 import { Action } from '../reducers/BlogReducer';
 import { v4 as uuidv4 } from 'uuid';
@@ -9,108 +9,100 @@ import { v4 as uuidv4 } from 'uuid';
 export const AddBlogComponent = () => {
 
     const { dispatch } = useContext(BlogContext);
-    const [description, setDescription] = useState('');
+    const [topic, setTopic] = useState('');
+    const [content, setContent] = useState('');
+    const [writer, setWriter] = useState('');
+    const [category, setCategory] = useState(' ');
 
     const onAddBlog = (e) => {
-
         e.preventDefault();
-
         dispatch({
-            type: Action.ADD_TASK,
+            type: Action.CREATE_BLOG,
             blog: {
                 id: uuidv4(),
                 isChecked: false,
                 created: new Date(),
-                description: description
+                topic: topic,
+                content: content,
+                writer: writer,
+                category: category
+
             }
         });
-        setDescription('')
+        setTopic('')
+        setContent('')
+        setWriter('')
+        setCategory(' ')
+
     }
     return (
         <form onSubmit={onAddBlog}>
             <Grid
                 container
-                direction="row"
+                direction="column"
                 justify="center"
                 alignItems="center">
 
                 <TextField
-                    label="Add Blog"
-                    variant="outlined"
+                    label="Topic"
+                    variant="standard"
                     size="small"
-                    value={description}
+                    value={topic}
                     onChange={
                         (e) => {
-                            setDescription(e.target.value)
+                            setTopic(e.target.value)
                         }
                     }
-                />
+                /><br/>
                 <TextField
-                    label="Add Blog"
-                    variant="outlined"
+                    label="Content"
+                    variant="standard"
                     size="small"
-                    value={description}
+                    multiline
+                    value={content}
                     onChange={
                         (e) => {
-                            setDescription(e.target.value)
+                            setContent(e.target.value)
                         }
                     }
-                />
+                /><br/>
                 <TextField
-                    label="Add Blog"
-                    variant="outlined"
+                    label="Writer Name"
+                    variant="standard"
                     size="small"
-                    value={description}
+                    value={writer}
                     onChange={
                         (e) => {
-                            setDescription(e.target.value)
+                            setWriter(e.target.value)
                         }
                     }
-                />
-                <TextField
-                    label="Add Blog"
-                    variant="outlined"
-                    size="small"
-                    value={description}
+                /><br/><Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={category}
+                    // placeholder="Select Category"
                     onChange={
                         (e) => {
-                            setDescription(e.target.value)
+                            setCategory(e.target.value)
                         }
                     }
-                />
-                <TextField
-                    label="Add Blog"
-                    variant="outlined"
-                    size="small"
-                    value={description}
-                    onChange={
-                        (e) => {
-                            setDescription(e.target.value)
-                        }
-                    }
-                />
-                <TextField
-                    label="Add Blog"
-                    variant="outlined"
-                    size="small"
-                    value={description}
-                    onChange={
-                        (e) => {
-                            setDescription(e.target.value)
-                        }
-                    }
-                />
-                <TextField
-                    label="Add Blog"
-                    variant="outlined"
-                    size="small"
-                    value={description}
-                    onChange={
-                        (e) => {
-                            setDescription(e.target.value)
-                        }
-                    }
-                />
+                >
+                    <MenuItem value={" "}>Select Category</MenuItem>
+                    <MenuItem value={"Thoughts"}>Thoughts</MenuItem>
+                    <MenuItem value={"Shayaris"}>Shayaris</MenuItem>
+                    <MenuItem value={"Quotes"}>Quotes</MenuItem>
+                    <MenuItem value={"Lyrics"}>Lyrics</MenuItem>
+                    <MenuItem value={"Poems"}>Poems</MenuItem>
+                </Select>
+                <br></br>
+                <Button
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                    
+                >
+                    ADD THIS BLOG
+                </Button>
 
 
             </Grid>

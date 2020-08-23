@@ -18,7 +18,7 @@ const NavbarComponent = () => {
                 <Typography
                     variant="h6"
                     color="inherit">
-                    Blog Add ({blogs.length})
+                    {blogs}
                 </Typography>
             </Toolbar>
         </AppBar>
