@@ -1,38 +1,73 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import './App.css';
+import firebase from './Firebase';
 
-import NavbarComponent from './components/NavbarComponent';
-import Container from '@material-ui/core/Container';
-import BlogContextProvider from './contexts/BlogContext';
-import TodoListComponent from './components/BlogListComponent';
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.ref = firebase.firestore().collection('boards');
+    this.unsubscribe = null;
+    this.state = {
+      boards: []
+    };
+  }
 
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { CssBaseline } from '@material-ui/core';
+  onCollectionUpdate = (querySnapshot) => {
+    const boards = [];
+    querySnapshot.forEach((doc) => {
+      const { title, description, author } = doc.data();
+      boards.push({
+        key: doc.id,
+        doc, // DocumentSnapshot
+        title,
+        description,
+        author,
+      });
+    });
+    this.setState({
+      boards
+   });
+  }
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#000000",
-    },
-    secondary: {
-      main: "#ffffff",
-    },
-  },
-});
+  componentDidMount() {
+    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+  }
 
-function App() {
-  return (
-    <MuiThemeProvider theme={theme}>
-      <CssBaseline/>
-      <Container maxWidth="md">
-      <BlogContextProvider>
-        <NavbarComponent></NavbarComponent>
-        <TodoListComponent></TodoListComponent>
-      </BlogContextProvider>
-    </Container>
-    </MuiThemeProvider>
-    
-  );
+  render() {
+    return (
+      <div class="container">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">
+              BOARD LIST
+            </h3>
+          </div>
+          <div class="panel-body">
+            <h4><Link to="/create" class="btn btn-primary">Add Board</Link></h4>
+            <table class="table table-stripe">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Author</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.boards.map(board =>
+                  <tr>
+                    <td><Link to={`/show/${board.key}`}>{board.title}</Link></td>
+                    <td>{board.description}</td>
+                    <td>{board.author}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
-
